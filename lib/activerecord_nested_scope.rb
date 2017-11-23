@@ -1,0 +1,4 @@
+require 'active_record_union'
+require 'activerecord_nested_scope/version'
+require 'activerecord_nested_scope/extension'
+require 'activerecord_nested_scope/railtie' if defined?(Rails)
