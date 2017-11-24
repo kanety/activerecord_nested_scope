@@ -86,10 +86,10 @@ module ActiveRecordNestedScope
   class RootRelation
     class << self
       def build(klass, args)
-        if args.is_a?(Fixnum) || args.is_a?(ActiveRecord::Base)
+        if args.is_a?(Integer) || args.is_a?(ActiveRecord::Base)
           klass.where(klass.primary_key => args)
         elsif args.is_a?(ActiveRecord::Relation)
-          klass.merge(args)
+          klass.all.merge(args)
         elsif args
           klass.where(args)
         else

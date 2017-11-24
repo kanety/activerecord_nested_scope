@@ -6,6 +6,7 @@ An ActiveRecord extension to build nested scopes through pre-defined association
 
 * ruby 2.3+
 * activerecord 5.0+
+* activesupport 5.0+
 
 ## Installation
 
@@ -44,7 +45,7 @@ class UserConfig < ActiveRecord::Base
 end
 ```
 
-`in_group` scope generates subquery as follows:
+`in_group` scope generates SQL as follows:
 
 ```ruby
 User.in_group(id: 1)
@@ -56,7 +57,7 @@ UserConfig.in_group(id: 1)
 
 ### Join mode
 
-Instead of subquery, join clause is also available. For example:
+Instead of subquery, join is also available. For example:
 
 ```ruby
 class UserConfig < ActiveRecord::Base
@@ -65,14 +66,16 @@ class UserConfig < ActiveRecord::Base
 end
 ```
 
-`in_group` scope generates join as follows:
+`in_group` scope generates join SQL as follows:
 
 ```ruby
 UserConfig.in_group(id: 1)
  #=> SELECT "user_configs".* FROM "user_configs" INNER JOIN "users" ON "users"."id" = "user_configs"."user_id" INNER JOIN "groups" ON "groups"."id" = "users"."group_id" WHERE "groups"."id" = 1
 ```
 
-LIMITATION: Join mode does not support polymorphic associations.
+### Limitations
+
+Join mode does not support polymorphic association.
 
 ## Contributing
 

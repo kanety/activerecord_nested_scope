@@ -7,4 +7,8 @@ gemfile:
   - gemfiles/rails51.gemfile
 before_install:
   - gem install bundler -v 1.15.3
+before_script:
+  - cd spec/dummy
+  - bundle exec rake db:migrate RAILS_ENV=test
+  - cd ../..
 script: bundle exec rspec
