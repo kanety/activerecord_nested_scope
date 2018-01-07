@@ -8,8 +8,9 @@ require "activerecord_nested_scope"
 
 module Dummy
   class Application < Rails::Application
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    unless (database = ENV['DATABASE'].to_s).empty?
+      config.paths["config/database"] = "config/database_#{database}.yml"
+      ENV['SCHEMA'] = Rails.root.join("db/schema_#{database}.rb").to_s
+    end
   end
 end
