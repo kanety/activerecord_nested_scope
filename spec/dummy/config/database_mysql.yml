@@ -1,0 +1,16 @@
+default: &default
+  adapter: mysql2
+  pool: 10
+  timeout: 5000
+
+development:
+  <<: *default
+  database: activerecord_nested_scope_development
+
+test:
+  <<: *default
+  database: activerecord_nested_scope_test
+
+production:
+  <<: *default
+  database: activerecord_nested_scope_production

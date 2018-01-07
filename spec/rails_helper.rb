@@ -5,12 +5,11 @@ require File.expand_path('../dummy/config/environment', __FILE__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 
-ActiveRecord::Migration.maintain_test_schema!
+#ActiveRecord::Migration.maintain_test_schema!
 
-Rails.application.load_tasks
-
-RSpec.configure do |config|
-  config.before(:suite) do
-    Rake::Task['db:seed'].invoke
-  end
-end
+#Rails.application.load_tasks
+#RSpec.configure do |config|
+#  config.before(:suite) do
+#    Rake::Task['db:seed'].invoke
+#  end
+#end
