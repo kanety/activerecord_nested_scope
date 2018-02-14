@@ -2,6 +2,7 @@ language: ruby
 rvm:
   - 2.3
   - 2.4
+  - 2.5
 services:
   - mysql
   - postgresql
@@ -14,6 +15,7 @@ env:
 gemfile:
   - gemfiles/rails50.gemfile
   - gemfiles/rails51.gemfile
+  - gemfiles/rails52.gemfile
 before_script:
   - cd spec/dummy
   - bundle exec rake db:create RAILS_ENV=test
