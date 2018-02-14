@@ -6,13 +6,7 @@ module ActiveRecordNestedScope
     end
 
     def build(args)
-      options = @klass._nested_scope_options[@name]
-
-      if options[:join] == true
-        JoinRelationBuilder.new(@klass, @name).build(args)
-      else
-        SubqueryRelationBuilder.new(@klass, @name).build(args)
-      end
+      SubqueryRelationBuilder.new(@klass, @name).build(args)
     end
   end
 
@@ -54,31 +48,6 @@ module ActiveRecordNestedScope
         end
       else
         raise ArgumentError.new("unexpected reflection: #{ref} in #{klass}")
-      end
-    end
-  end
-
-  class JoinRelationBuilder < Builder
-    def build(args)
-      refs = search_reflections(@klass)
-      joins = refs.reverse.inject({}) { |hash, ref| { ref.name => hash } }
-      @klass.joins(joins).merge(RootRelation.build(refs.last.klass, args))
-    end
-
-    private
-
-    def search_reflections(klass, refs = [])
-      through = klass._nested_scope_options[@name][:through]
-      return refs unless through
-
-      ref = klass.reflect_on_association(through)
-      if ref.nil?
-        raise ArgumentError.new("can't find reflection: #{through} in #{klass}")
-      elsif ref.polymorphic?
-        raise ArgumentError.new("can't join polymorphic association: #{through} in #{klass}")
-      else
-        refs << ref
-        search_reflections(ref.klass, refs)
       end
     end
   end

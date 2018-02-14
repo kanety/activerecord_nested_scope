@@ -1,4 +1,4 @@
-require 'active_support/core_ext/class/attribute'
+require 'active_support'
 require_relative 'builder'
 
 module ActiveRecordNestedScope

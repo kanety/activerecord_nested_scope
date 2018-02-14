@@ -36,35 +36,9 @@ describe ActiveRecordNestedScope do
     end
   end
 
-  context 'build join query' do
-    it 'belongs_to' do
-      valid_patterns.each do |g|
-        expect(User.in_group_join(g).count).to be > 0
-        expect(UserConfig.in_group_join(g).count).to be > 0
-      end
-    end
-
-    it 'has_one' do
-      valid_patterns.each do |g|
-        expect(Manager.in_group_join(g).count).to be > 0
-      end
-    end
-
-    it 'has_many' do
-      valid_patterns.each do |g|
-        expect(Supervisor.in_group_join(g).count).to be > 0
-      end
-    end
-  end
-
   context 'invalid arguments' do
-    it 'invalid join for polymorphic association' do
-      expect { Name.in_group_join(1) }.to raise_error(ArgumentError)
-    end
-
     it 'invalid association name' do
       expect { Group.in_invalid(1) }.to raise_error(ArgumentError)
-      expect { Group.in_invalid_join(1) }.to raise_error(ArgumentError)
     end
   end
 end
