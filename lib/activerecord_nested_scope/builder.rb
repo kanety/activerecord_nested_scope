@@ -6,12 +6,6 @@ module ActiveRecordNestedScope
     end
 
     def build(args)
-      SubqueryRelationBuilder.new(@klass, @name).build(args)
-    end
-  end
-
-  class SubqueryRelationBuilder < Builder
-    def build(args)
       @args = args
       build_for(@klass)
     end
@@ -19,16 +13,18 @@ module ActiveRecordNestedScope
     private
 
     def build_for(klass)
-      through = klass._nested_scope_options[@name][:through]
-      if through
-        ref = klass.reflect_on_association(through)
-        if ref.nil?
-          raise ArgumentError.new("can't find reflection #{through} in #{klass}")
+      if klass._nested_scope_options
+        if (through = klass._nested_scope_options[@name][:through])
+          if (ref = klass.reflect_on_association(through))
+            build_relations(klass, ref)
+          else
+            raise ArgumentError.new("can't find reflection #{through} in #{klass}")
+          end
         else
-          build_relations(klass, ref)
+          RootRelation.build(klass, @args)
         end
       else
-        RootRelation.build(klass, @args)
+        klass.none
       end
     end
 
@@ -40,8 +36,11 @@ module ActiveRecordNestedScope
         if ref.polymorphic?
           ref_types = klass.unscoped.group(ref.foreign_type).pluck(ref.foreign_type)
           ref_types.map { |ref_type|
-            ref_klass = ref_type.safe_constantize
-            klass.where(ref.foreign_type => ref_type, ref.foreign_key => build_for(ref_klass))
+            if (ref_klass = ref_type.safe_constantize)
+              klass.where(ref.foreign_type => ref_type, ref.foreign_key => build_for(ref_klass))
+            else
+              klass.none
+            end
           }.reduce(:union)
         else
           klass.where(ref.foreign_key => build_for(ref.klass).select(klass.primary_key))
