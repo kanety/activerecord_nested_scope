@@ -14,8 +14,8 @@ module ActiveRecordNestedScope
         self._nested_scope_options ||= {}
         self._nested_scope_options[name] = options
 
-        self.scope name, ->(args) {
-          ActiveRecordNestedScope::Builder.new(self, name).build(args)
+        scope name, ->(args) {
+          ActiveRecordNestedScope::Builder.new(self, name, args).build
         }
       end
     end
