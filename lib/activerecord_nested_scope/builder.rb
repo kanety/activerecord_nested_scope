@@ -53,13 +53,23 @@ module ActiveRecordNestedScope
 
     def belongs_to_polymorphic_relation(klass, ref)
       types = klass.unscoped.group(ref.foreign_type).pluck(ref.foreign_type)
-      types.map { |type|
+      rels = types.map { |type|
         if (parent = type.safe_constantize)
           klass.where(ref.foreign_type => type, ref.foreign_key => build_for(parent))
         else
           klass.none
         end
-      }.reduce(:union)
+      }
+      union(klass, rels)
+    end
+
+    def union(klass, rels)
+      if defined? ActiveRecordUnion
+        rels.reduce(:union)
+      else
+        union = rels.map { |rel| "#{rel.to_sql}" }.join(' UNION ')
+        klass.from("(#{union}) AS #{klass.table_name}")
+      end
     end
 
     def root_relation(klass)

@@ -19,7 +19,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "activerecord", ">= 5.0"
   spec.add_dependency "activesupport", ">= 5.0"
-  spec.add_dependency "active_record_union"
 
   spec.add_development_dependency "rails", ">= 5.0"
   spec.add_development_dependency "mysql2"
