@@ -46,10 +46,13 @@ end
 
 ```ruby
 User.in_group(id: 1)
-#=> SELECT "users".* FROM "users" WHERE "users"."group_id" IN (SELECT "groups"."id" FROM "groups" WHERE "groups"."id" = 1)
+#=> SELECT "users".* FROM "users" WHERE "users"."group_id" IN (
+#     SELECT "groups"."id" FROM "groups" WHERE "groups"."id" = 1)
 
 UserConfig.in_group(id: 1)
-#=> SELECT "user_configs".* FROM "user_configs" WHERE "user_configs"."user_id" IN (SELECT "users"."id" FROM "users" WHERE "users"."group_id" IN (SELECT "groups"."id" FROM "groups" WHERE "groups"."id" = 1))
+#=> SELECT "user_configs".* FROM "user_configs" WHERE "user_configs"."user_id" IN (
+#     SELECT "users"."id" FROM "users" WHERE "users"."group_id" IN (
+#       SELECT "groups"."id" FROM "groups" WHERE "groups"."id" = 1))
 ```
 
 ### Polymorphic association
@@ -68,7 +71,11 @@ end
 ```ruby
 Name.in_group(id: 1)
 #=> SELECT "names"."data_type" FROM "names" GROUP BY "names"."data_type"
-#=> SELECT "names".* FROM ( SELECT "names".* FROM ( SELECT "names".* FROM ( SELECT "names".* FROM "names" WHERE "names"."data_type" = 'Group' AND "names"."data_id" IN (SELECT "groups"."id" FROM "groups" WHERE "groups"."id" = 1) UNION SELECT "names".* FROM "names" WHERE "names"."data_type" = 'Manager' AND "names"."data_id" IN (SELECT "managers"."id" FROM "managers" WHERE "managers"."id" IN (SELECT "groups"."manager_id" FROM "groups" WHERE "groups"."id" = 1)) ) "names" UNION SELECT "names".* FROM "names" WHERE "names"."data_type" = 'Supervisor' AND "names"."data_id" IN (SELECT "supervisors"."id" FROM "supervisors" WHERE "supervisors"."id" IN (SELECT "managers"."supervisor_id" FROM "managers" WHERE "managers"."id" IN (SELECT "groups"."manager_id" FROM "groups" WHERE "groups"."id" = 1))) ) "names" UNION SELECT "names".* FROM "names" WHERE "names"."data_type" = 'User' AND "names"."data_id" IN (SELECT "users"."id" FROM "users" WHERE "users"."group_id" IN (SELECT "groups"."id" FROM "groups" WHERE "groups"."id" = 1)) ) "names"
+#   SELECT "names".* FROM (
+#     SELECT "names".* FROM "names" WHERE "names"."data_type" = 'Group' AND "names"."data_id" IN (SELECT "groups"."id" FROM "groups" WHERE "groups"."id" = 1) UNION 
+#     SELECT "names".* FROM "names" WHERE "names"."data_type" = 'Manager' AND "names"."data_id" IN (SELECT "managers"."id" FROM "managers" WHERE "managers"."id" IN (SELECT "groups"."manager_id" FROM "groups" WHERE "groups"."id" = 1)) UNION 
+#     SELECT "names".* FROM "names" WHERE "names"."data_type" = 'Supervisor' AND "names"."data_id" IN (SELECT "supervisors"."id" FROM "supervisors" WHERE "supervisors"."id" IN (SELECT "managers"."supervisor_id" FROM "managers" WHERE "managers"."id" IN (SELECT "groups"."manager_id" FROM "groups" WHERE "groups"."id" = 1) ORDER BY "managers"."id" ASC)) UNION 
+#     SELECT "names".* FROM "names" WHERE "names"."data_type" = 'User' AND "names"."data_id" IN (SELECT "users"."id" FROM "users" WHERE "users"."group_id" IN (SELECT "groups"."id" FROM "groups" WHERE "groups"."id" = 1))) AS names
 ```
 
 Note that the first SQL is executed to load `data_type`, and the second SQL is built using loaded `data_type` variations.
