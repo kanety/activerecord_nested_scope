@@ -9,3 +9,5 @@
   Name.create(data: group)
   Name.create(data: user)
 end
+
+Name.create(data_id: 0, data_type: 'INVALID_TYPE')

@@ -39,37 +39,28 @@ module ActiveRecordNestedScope
           belongs_to_relation(klass, ref)
         end
       else
-        raise ArgumentError.new("unexpected reflection: #{ref} in #{klass}")
+        raise ArgumentError.new("unsupported reflection: #{ref} in #{klass}")
       end
     end
 
     def has_many_relation(klass, ref)
-      klass.where(klass.primary_key => build_for(ref.klass).select(ref.foreign_key))
+      klass.where(klass.primary_key => build_for(ref.klass).merge(scoped(ref.klass, ref.scope)).select(ref.foreign_key))
     end
 
     def belongs_to_relation(klass, ref)
-      klass.where(ref.foreign_key => build_for(ref.klass).select(klass.primary_key))
+      klass.where(ref.foreign_key => build_for(ref.klass).merge(scoped(ref.klass, ref.scope)).select(klass.primary_key))
     end
 
     def belongs_to_polymorphic_relation(klass, ref)
       types = klass.unscoped.group(ref.foreign_type).pluck(ref.foreign_type)
       rels = types.map { |type|
         if (parent = type.safe_constantize)
-          klass.where(ref.foreign_type => type, ref.foreign_key => build_for(parent))
+          klass.where(ref.foreign_type => type, ref.foreign_key => build_for(parent).merge(scoped(parent, ref.scope)))
         else
           klass.none
         end
       }
       union(klass, rels)
-    end
-
-    def union(klass, rels)
-      if defined? ActiveRecordUnion
-        rels.reduce(:union)
-      else
-        union = rels.map { |rel| "#{rel.to_sql}" }.join(' UNION ')
-        klass.from("(#{union}) AS #{klass.table_name}")
-      end
     end
 
     def root_relation(klass)
@@ -81,6 +72,21 @@ module ActiveRecordNestedScope
         klass.where(@args)
       else
         klass.all
+      end
+    end
+
+    def scoped(klass, scope)
+      rel = klass.all
+      rel = rel.instance_eval(&scope) if scope
+      rel
+    end
+
+    def union(klass, rels)
+      if defined? ActiveRecordUnion
+        rels.reduce(:union)
+      else
+        union = rels.map { |rel| "#{rel.to_sql}" }.reject(&:empty?).join(' UNION ')
+        klass.from(Arel.sql("(#{union}) AS #{klass.table_name}"))
       end
     end
   end
