@@ -26,7 +26,7 @@ describe ActiveRecordNestedScope do
   end
 
   it 'takes several arguments' do
-    [nil, 1, { id: 1 }, Group.find(1), Group.where(id: 1)].each do |g|
+    [nil, 1, [1], { id: 1 }, Group.find(1), Group.where(id: 1)].each do |g|
       puts User.in_group(g).to_sql
       expect(User.in_group(g).count).to be > 0
     end
