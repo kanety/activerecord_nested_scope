@@ -52,7 +52,7 @@ module ActiveRecordNestedScope
     end
 
     def belongs_to_polymorphic_relation(klass, ref)
-      types = klass.unscoped.group(ref.foreign_type).pluck(ref.foreign_type)
+      types = klass.unscoped.group(ref.foreign_type).pluck(ref.foreign_type).compact
       if types.present?
         rels = types.map { |type|
           if (parent = type.safe_constantize)

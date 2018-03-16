@@ -11,3 +11,4 @@
 end
 
 Name.create(data_id: 0, data_type: 'INVALID_TYPE')
+Name.create(data_id: nil, data_type: nil)
