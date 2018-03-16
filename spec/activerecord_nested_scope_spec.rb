@@ -15,6 +15,11 @@ describe ActiveRecordNestedScope do
     expect(Name.in_group(1).count).to be > 0
   end
 
+  it 'belongs_to with empty polymorphic' do
+    puts Empty.in_group(1).to_sql
+    expect(Empty.in_group(1).count).to be 0
+  end
+
   it 'has_one' do
     puts Manager.in_group(1).to_sql
     expect(Manager.in_group(1).count).to be > 0

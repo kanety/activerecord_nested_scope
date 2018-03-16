@@ -53,14 +53,18 @@ module ActiveRecordNestedScope
 
     def belongs_to_polymorphic_relation(klass, ref)
       types = klass.unscoped.group(ref.foreign_type).pluck(ref.foreign_type)
-      rels = types.map { |type|
-        if (parent = type.safe_constantize)
-          klass.where(ref.foreign_type => type, ref.foreign_key => build_for(parent).merge(scoped(parent, ref.scope)))
-        else
-          klass.none
-        end
-      }
-      union(klass, rels)
+      if types.present?
+        rels = types.map { |type|
+          if (parent = type.safe_constantize)
+            klass.where(ref.foreign_type => type, ref.foreign_key => build_for(parent).merge(scoped(parent, ref.scope)))
+          else
+            klass.none
+          end
+        }
+        union(klass, rels)
+      else
+        klass.none
+      end
     end
 
     def root_relation(klass)

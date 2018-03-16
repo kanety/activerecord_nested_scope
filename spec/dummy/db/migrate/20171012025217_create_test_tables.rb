@@ -20,5 +20,8 @@ class CreateTestTables < ActiveRecord::Migration[5.0]
       t.text       :kana
       t.references :data, polymorphic: true
     end
+    create_table :empties do |t|
+      t.references :data, polymorphic: true
+    end
   end
 end
