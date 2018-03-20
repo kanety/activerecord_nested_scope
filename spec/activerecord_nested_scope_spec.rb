@@ -30,8 +30,8 @@ describe ActiveRecordNestedScope do
     expect(Supervisor.in_group(1).count).to be > 0
   end
 
-  it 'takes several arguments' do
-    [nil, 1, [1], { id: 1 }, Group.find(1), Group.where(id: 1)].each do |g|
+  [nil, 1, "1", [1], { id: 1 }, Group.find(1), Group.where(id: 1)].each do |g|
+    it "takes #{g.class} argument" do
       puts User.in_group(g).to_sql
       expect(User.in_group(g).count).to be > 0
     end

@@ -68,12 +68,12 @@ module ActiveRecordNestedScope
     end
 
     def root_relation(klass)
-      if @args.is_a?(Integer) || @args.is_a?(Array) || @args.is_a?(ActiveRecord::Base)
-        klass.where(klass.primary_key => @args)
-      elsif @args.is_a?(ActiveRecord::Relation)
+      if @args.is_a?(ActiveRecord::Relation)
         klass.all.merge(@args)
-      elsif @args
+      elsif @args.is_a?(Hash)
         klass.where(@args)
+      elsif @args
+        klass.where(klass.primary_key => @args)
       else
         klass.all
       end
