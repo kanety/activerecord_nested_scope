@@ -4,6 +4,7 @@
 Gemfile.lock
 _yardoc/
 coverage/
+gemfiles/*.lock
 doc/
 pkg/
 spec/reports/
