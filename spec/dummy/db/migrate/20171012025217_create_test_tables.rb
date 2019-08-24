@@ -18,10 +18,10 @@ class CreateTestTables < ActiveRecord::Migration[5.0]
     create_table :names do |t|
       t.text       :name
       t.text       :kana
-      t.references :data, polymorphic: true
+      t.references :data, polymorphic: true, index: false
     end
     create_table :empties do |t|
-      t.references :data, polymorphic: true
+      t.references :data, polymorphic: true, index: false
     end
   end
 end
