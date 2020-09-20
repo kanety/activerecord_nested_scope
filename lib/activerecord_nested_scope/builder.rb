@@ -86,12 +86,8 @@ module ActiveRecordNestedScope
     end
 
     def union(klass, rels)
-      if defined? ActiveRecordUnion
-        rels.reduce(:union)
-      else
-        union = rels.map { |rel| "#{rel.to_sql}" }.reject(&:empty?).join(' UNION ')
-        klass.from(Arel.sql("(#{union}) AS #{klass.table_name}"))
-      end
+      union = rels.map { |rel| "#{rel.to_sql}" }.reject(&:empty?).join(' UNION ')
+      klass.from(Arel.sql("(#{union}) AS #{klass.table_name}"))
     end
   end
 end

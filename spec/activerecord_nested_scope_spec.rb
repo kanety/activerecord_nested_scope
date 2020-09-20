@@ -40,12 +40,4 @@ describe ActiveRecordNestedScope do
   it 'raise errors for invalid association name' do
     expect { Group.in_invalid(1) }.to raise_error(ArgumentError)
   end
-
-  context 'active_record_union' do
-    it 'uses active_record_union' do
-      require 'active_record_union'
-      puts Name.in_group(1).to_sql
-      expect(Name.in_group(1).count).to be > 0
-    end
-  end
 end
