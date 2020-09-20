@@ -13,8 +13,8 @@ module ActiveRecordNestedScope
     private
 
     def build_for(klass)
-      if klass._nested_scope_options
-        if (through = klass._nested_scope_options[@name][:through])
+      if klass.nested_scope_options
+        if (through = klass.nested_scope_options[@name][:through])
           if (ref = klass.reflect_on_association(through))
             build_relation(klass, ref)
           else
