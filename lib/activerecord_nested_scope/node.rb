@@ -6,19 +6,23 @@ module ActiveRecordNestedScope
       @klass = klass
       @name = name
       @parent = parent
-      validate
     end
 
-    def through
-      options[:through]
+    def has_options?
+      options = @klass.nested_scope_options
+      options && options[@name]
+    end
+
+    def options(key)
+      (@klass.nested_scope_options.to_h[@name] || {})[key]
     end
 
     def reflection
-      @klass.reflect_on_association(through)
+      @klass.reflect_on_association(options(:through))
     end
 
     def leaf?
-      through.blank?
+      options(:through).blank?
     end
 
     def has_many?
@@ -26,11 +30,11 @@ module ActiveRecordNestedScope
     end
 
     def belongs_to?
-      reflection.class.name == 'ActiveRecord::Reflection::BelongsToReflection'
+      reflection.class.name == 'ActiveRecord::Reflection::BelongsToReflection' && !reflection.polymorphic?
     end
 
     def polymorphic_belongs_to?
-      belongs_to? && reflection.polymorphic?
+      reflection.class.name == 'ActiveRecord::Reflection::BelongsToReflection' && reflection.polymorphic?
     end
 
     def polymorphic_klasses
@@ -46,9 +50,9 @@ module ActiveRecordNestedScope
       if leaf?
         []
       elsif polymorphic_belongs_to?
-        polymorphic_klasses.map { |klass| Node.new(klass, @name, self) }
+        polymorphic_klasses.map { |klass| Node.new(klass, @name, self) }.select(&:valid?)
       else
-        [Node.new(reflection.klass, @name, self)]
+        [Node.new(reflection.klass, @name, self)].select(&:valid?)
       end
     end
 
@@ -58,19 +62,15 @@ module ActiveRecordNestedScope
       end
     end
 
-    private
+    def valid?
+      return false unless has_options?
 
-    def options
-      @klass.nested_scope_options[@name]
-    end
+      if options(:through) && !reflection
+        STDERR.puts "can't find reflection for #{options(:through)} in #{klass}"
+        return false
+      end
 
-    def validate
-      if options.nil?
-        raise ArgumentError.new("can't find nested_scope for #{@name} in #{klass}")
-      end
-      if through && !reflection
-        raise ArgumentError.new("can't find reflection for #{through} in #{klass}")
-      end
+      return true
     end
   end
 end

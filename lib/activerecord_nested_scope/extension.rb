@@ -1,4 +1,5 @@
 require 'active_support'
+require_relative 'node'
 require_relative 'builder'
 
 module ActiveRecordNestedScope

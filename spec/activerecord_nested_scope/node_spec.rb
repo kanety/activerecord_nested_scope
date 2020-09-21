@@ -29,11 +29,13 @@ describe ActiveRecordNestedScope::Node do
     expect(node.reflection).not_to eq(nil)
   end
 
-  it 'raise errors for undefined association' do
-    expect { ActiveRecordNestedScope::Node.new(NodeTest, :undefined) }.to raise_error(ArgumentError)
+  it 'returns false for undefined association' do
+    node = ActiveRecordNestedScope::Node.new(NodeTest, :undefined)
+    expect(node.valid?).to eq(false)
   end
 
-  it 'raise errors for invalid association' do
-    expect { ActiveRecordNestedScope::Node.new(NodeTest, :invalid) }.to raise_error(ArgumentError)
+  it 'returns false for invalid association' do
+    node = ActiveRecordNestedScope::Node.new(NodeTest, :invalid)
+    expect(node.valid?).to eq(false)
   end
 end

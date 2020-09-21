@@ -23,5 +23,7 @@ class CreateTestTables < ActiveRecord::Migration[5.0]
     create_table :empties do |t|
       t.references :data, polymorphic: true, index: false
     end
+    create_table :isolations do |t|
+    end
   end
 end

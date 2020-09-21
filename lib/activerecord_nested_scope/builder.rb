@@ -3,6 +3,7 @@ module ActiveRecordNestedScope
     def initialize(klass, name, args)
       @node = Node.new(klass, name)
       @args = args
+      @args_type = args_type(args)
     end
 
     def build(node = @node)
@@ -52,20 +53,39 @@ module ActiveRecordNestedScope
     end
 
     def child_relation(child, select:)
-      relation = build(child)
-      relation = relation.merge(child.reflection_scope) if child.reflection_scope
-      relation.select(select)
+      if simple_leaf_relation?(child)
+        @args
+      else
+        relation = build(child).select(select)
+        relation = relation.merge(child.reflection_scope) if child.reflection_scope
+        relation
+      end
+    end
+
+    def simple_leaf_relation?(child)
+      @args_type == :simple && child.leaf? && child.parent.belongs_to? && !child.reflection_scope
     end
 
     def leaf_relation(node)
-      if @args.is_a?(ActiveRecord::Relation)
+      case @args_type
+      when :relation
         node.klass.all.merge(@args)
-      elsif @args.is_a?(Hash)
+      when :hash
         node.klass.where(@args)
-      elsif @args
+      when :simple
         node.klass.where(node.klass.primary_key => @args)
       else
-        node.klass.none
+        raise ArgumentError.new("unexpected argument type: #{@args_type}")
+      end
+    end
+
+    def args_type(args)
+      if args.is_a?(ActiveRecord::Relation)
+        :relation
+      elsif args.is_a?(Hash)
+        :hash
+      else
+        :simple
       end
     end
 
