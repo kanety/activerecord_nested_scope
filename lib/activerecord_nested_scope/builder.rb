@@ -30,12 +30,16 @@ module ActiveRecordNestedScope
 
     def has_many_relation(node)
       child = node.children.first
+      return node.klass.none unless child
+
       relation = child_relation(child, select: node.reflection.foreign_key)
       node.klass.where(node.klass.primary_key => relation)
     end
 
     def belongs_to_relation(node)
       child = node.children.first
+      return node.klass.none unless child
+
       relation = child_relation(child, select: node.reflection.klass.primary_key)
       node.klass.where(node.reflection.foreign_key => relation)
     end
@@ -57,13 +61,13 @@ module ActiveRecordNestedScope
         @args
       else
         relation = build(child).select(select)
-        relation = relation.merge(child.reflection_scope) if child.reflection_scope
+        relation = relation.merge(child.scope) if child.has_scope?
         relation
       end
     end
 
     def simple_leaf_relation?(child)
-      @args_type == :simple && child.leaf? && child.parent.belongs_to? && !child.reflection_scope
+      @args_type == :simple && child.leaf? && child.parent.belongs_to? && !child.has_scope?
     end
 
     def leaf_relation(node)

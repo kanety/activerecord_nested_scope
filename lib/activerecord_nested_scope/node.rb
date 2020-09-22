@@ -14,7 +14,8 @@ module ActiveRecordNestedScope
     end
 
     def options(key)
-      (@klass.nested_scope_options.to_h[@name] || {})[key]
+      options = @klass.nested_scope_options.to_h
+      options.dig(@name, key)
     end
 
     def reflection
@@ -37,28 +38,17 @@ module ActiveRecordNestedScope
       reflection.class.name == 'ActiveRecord::Reflection::BelongsToReflection' && reflection.polymorphic?
     end
 
-    def polymorphic_klasses
-      types = @klass.unscoped.group(reflection.foreign_type).pluck(reflection.foreign_type).compact
-      types.map { |type| type.safe_constantize }.compact
-    end
-
     def children
-      @children ||= search_children
+      @children ||= search_children.select(&:valid?)
     end
 
     def search_children
       if leaf?
         []
       elsif polymorphic_belongs_to?
-        polymorphic_klasses.map { |klass| Node.new(klass, @name, self) }.select(&:valid?)
+        polymorphic_klasses.map { |klass| Node.new(klass, @name, self) }
       else
-        [Node.new(reflection.klass, @name, self)].select(&:valid?)
-      end
-    end
-
-    def reflection_scope
-      if parent && parent.reflection.scope
-        @klass.all.instance_eval(&parent.reflection.scope) 
+        [Node.new(reflection.klass, @name, self)]
       end
     end
 
@@ -71,6 +61,21 @@ module ActiveRecordNestedScope
       end
 
       return true
+    end
+
+    def has_scope?
+      @parent && @parent.reflection.scope.present?
+    end
+
+    def scope
+      @klass.all.instance_eval(&@parent.reflection.scope) if has_scope?
+    end
+
+    private
+
+    def polymorphic_klasses
+      types = @klass.unscoped.group(reflection.foreign_type).pluck(reflection.foreign_type).compact
+      types.map { |type| type.safe_constantize }.compact
     end
   end
 end

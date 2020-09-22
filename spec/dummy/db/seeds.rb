@@ -1,16 +1,22 @@
-10.times do
-  supervisor = Supervisor.create(test: "test")
-  manager = Manager.create(supervisor: supervisor)
-  group = Group.create(manager: manager)
-  user = User.create(group: group)
-  UserConfig.create(user: user)
-  isolation = Isolation.create
-  Name.create(data: supervisor)
-  Name.create(data: manager)
-  Name.create(data: group)
-  Name.create(data: user)
-  Name.create(data: isolation)
+10.times do |i|
+  supervisor = Supervisor.create(title: "supervisor#{i}")
+  Polymorphism.create(record: supervisor)
+
+  manager = Manager.create(supervisor: supervisor, title: "manager#{i}")
+  Polymorphism.create(record: manager)
+
+  group = Group.create(manager: manager, title: "group#{i}")
+  Polymorphism.create(record: group)
+
+  user = User.create(group: group, title: "user#{i}")
+  Polymorphism.create(record: user)
+
+  user_config = UserConfig.create(user: user, title: "user_cofig#{i}")
+  Polymorphism.create(record: user_config)
+
+  isolation = Isolation.create(title: "isolation#{i}")
+  Polymorphism.create(record: isolation)
 end
 
-Name.create(data_id: 0, data_type: 'INVALID_TYPE')
-Name.create(data_id: nil, data_type: nil)
+Polymorphism.create(record_id: 0, record_type: 'INVALID_TYPE')
+Polymorphism.create(record_id: nil, record_type: nil)
