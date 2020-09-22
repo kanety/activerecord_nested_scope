@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.1.0
+
+* Add short query feature for simple belongs_to association.
+* Rename `_nested_scope_options` to `nested_scope_options`.
+* Remove support for active_record_union.
+
 ## 1.0.4
 
 * Fix query for string value.
