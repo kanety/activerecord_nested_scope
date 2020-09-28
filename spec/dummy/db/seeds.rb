@@ -1,4 +1,4 @@
-10.times do |i|
+1.upto(10) do |i|
   supervisor = Supervisor.create(title: "supervisor#{i}")
   Polymorphism.create(record: supervisor)
 
