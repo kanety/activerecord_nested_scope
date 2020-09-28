@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.1
+
+* Fix query for associations with primary key option.
+
 ## 1.1.0
 
 * Add short query feature for simple belongs_to association.
