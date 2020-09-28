@@ -9,7 +9,7 @@ doc/
 pkg/
 spec/reports/
 spec/dummy/config/database.yml
-spec/dummy/db/schema.rb
+spec/dummy/db/schema*.rb
 spec/dummy/db/*.sqlite3
 spec/dummy/log/*.log
 spec/dummy/tmp/*
