@@ -60,9 +60,13 @@ module ActiveRecordNestedScope
       if simple_leaf_relation?(child)
         @args
       else
-        relation = build(child).select(select)
+        relation = build(child)
         relation = relation.merge(child.scope) if child.has_scope?
-        relation
+        if child.parent.database == child.database
+          relation.select(select)
+        else
+          relation.pluck(select)
+        end
       end
     end
 

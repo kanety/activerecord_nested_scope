@@ -27,3 +27,7 @@ end
 
 Polymorphism.create(record_id: 0, record_type: 'INVALID_TYPE')
 Polymorphism.create(record_id: nil, record_type: nil)
+
+if Rails::VERSION::MAJOR >= 6
+  load 'db/seeds_secondary.rb'
+end

@@ -1,0 +1,34 @@
+default: &default
+  adapter: mysql2
+  pool: 10
+  timeout: 5000
+  charset: utf8mb4
+  collation: utf8mb4_bin
+  encoding: utf8mb4
+
+development:
+  primary:
+    <<: *default
+    database: ar_nested_scope_development
+  secondary:
+    <<: *default
+    database: ar_nested_scope_development_secondary
+    migrations_paths: db/secondary_migrate
+
+test:
+  primary:
+    <<: *default
+    database: ar_nested_scope_test
+  secondary:
+    <<: *default
+    database: ar_nested_scope_test_secondary
+    migrations_paths: db/secondary_migrate
+
+production:
+  primary:
+    <<: *default
+    database: ar_nested_scope_production
+  secondary:
+    <<: *default
+    database: ar_nested_scope_production_secondary
+    migrations_paths: db/secondary_migrate

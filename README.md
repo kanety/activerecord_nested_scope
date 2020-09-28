@@ -95,6 +95,42 @@ User.in_group(id: 1)
 User.in_group(Group.where(id: 1))
 ```
 
+### Multiple database
+
+If you define a nested_scope among models stored into different databases,
+SQL is separated into multiple queries for each database and they are merged by using IN clause.
+For example:
+
+```ruby
+class Secondary::Base < ActiveRecord::Base
+  self.abstract_class = true
+  connects_to database: { writing: :secondary, reading: :secondary }
+end
+
+# users are stored into secondary database
+class Secondary::User < Secondary:::Base
+  belongs_to :group, class_name: 'Group'
+  nested_scope :in_group, through: :group
+  ...
+end
+
+# user_configs are also stored into secondary database
+class Secondary::UserConfig < Secondary::Base
+  belongs_to :user
+  nested_scope :in_group, through: :user
+  ...
+end
+
+Secondary::User.in_group(id: 1)
+#=> SELECT "groups"."id" FROM "groups" WHERE "groups"."id" = 1
+#=> SELECT "users".* FROM "users" WHERE "users"."group_id" IN (1, 2, 3)
+
+Secondary::UserConfig.in_group(id: 1)
+#=> SELECT "groups"."id" FROM "groups" WHERE "groups"."id" = 1
+#=> SELECT "user_configs".* FROM "user_configs" WHERE "user_configs"."user_id" IN (
+#     SELECT "users"."id" FROM "users" WHERE "users"."group_id" IN (1, 2, 3) 
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome at https://github.com/kanety/activerecord_nested_scope.

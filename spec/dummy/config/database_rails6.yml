@@ -1,0 +1,31 @@
+default: &default
+  adapter: sqlite3
+  pool: 10
+  timeout: 5000
+
+development:
+  primary:
+    <<: *default
+    database: db/development.sqlite3
+  secondary:
+    <<: *default
+    database: db/development_secondary.sqlite3
+    migrations_paths: db/migrate_secondary
+
+test:
+  primary:
+    <<: *default
+    database: db/test.sqlite3
+  secondary:
+    <<: *default
+    database: db/test_secondary.sqlite3
+    migrations_paths: db/migrate_secondary
+
+production:
+  primary:
+    <<: *default
+    database: db/production.sqlite3
+  secondary:
+    <<: *default
+    database: db/production_secondary.sqlite3
+    migrations_paths: db/migrate_secondary

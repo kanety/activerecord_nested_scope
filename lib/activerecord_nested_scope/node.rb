@@ -22,6 +22,10 @@ module ActiveRecordNestedScope
       @klass.reflect_on_association(options(:through))
     end
 
+    def database
+      @klass.connection_config[:database]
+    end
+
     def leaf?
       options(:through).blank?
     end

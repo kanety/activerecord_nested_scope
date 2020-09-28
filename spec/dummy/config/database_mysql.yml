@@ -8,12 +8,12 @@ default: &default
 
 development:
   <<: *default
-  database: activerecord_nested_scope_development
+  database: ar_nested_scope_development
 
 test:
   <<: *default
-  database: activerecord_nested_scope_test
+  database: ar_nested_scope_test
 
 production:
   <<: *default
-  database: activerecord_nested_scope_production
+  database: ar_nested_scope_production

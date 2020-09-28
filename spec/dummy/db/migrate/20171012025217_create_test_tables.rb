@@ -7,6 +7,8 @@ class CreateTestTables < ActiveRecord::Migration[5.0]
     create_table :groups do |t|
       t.references :organization
       t.references :manager
+      t.references :secondary_organization
+      t.references :secondary_manager
       t.text       :title
       t.timestamps
     end
