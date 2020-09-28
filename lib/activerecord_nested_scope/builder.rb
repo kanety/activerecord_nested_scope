@@ -33,14 +33,14 @@ module ActiveRecordNestedScope
       return node.klass.none unless child
 
       relation = child_relation(child, select: node.reflection.foreign_key)
-      node.klass.where(node.klass.primary_key => relation)
+      node.klass.where(node.reflection.active_record_primary_key => relation)
     end
 
     def belongs_to_relation(node)
       child = node.children.first
       return node.klass.none unless child
 
-      relation = child_relation(child, select: node.reflection.klass.primary_key)
+      relation = child_relation(child, select: node.reflection.active_record_primary_key)
       node.klass.where(node.reflection.foreign_key => relation)
     end
 
