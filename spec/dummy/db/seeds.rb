@@ -5,7 +5,10 @@
   manager = Manager.create(supervisor: supervisor, title: "manager#{i}")
   Polymorphism.create(record: manager)
 
-  group = Group.create(manager: manager, title: "group#{i}")
+  organization = Organization.create(title: "organization#{i}")
+  Polymorphism.create(record: organization)
+
+  group = Group.create(organization: organization, manager: manager, title: "group#{i}")
   Polymorphism.create(record: group)
 
   user = User.create(group: group, title: "user#{i}")

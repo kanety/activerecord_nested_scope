@@ -1,6 +1,10 @@
 class CreateTestTables < ActiveRecord::Migration[5.0]
   def change
+    create_table :organizations do |t|
+      t.text       :title
+    end
     create_table :groups do |t|
+      t.references :organization
       t.references :manager
       t.text       :title
     end

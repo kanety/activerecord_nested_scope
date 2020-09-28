@@ -5,7 +5,9 @@ describe ActiveRecordNestedScope::Builder do
   end
 
   it 'has_many' do
+    puts Organization.in_group(1).to_sql
     puts Supervisor.in_group(1).to_sql
+    expect(Organization.in_group(1).count).to be > 0
     expect(Supervisor.in_group(1).count).to be > 0
   end
 
