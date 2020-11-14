@@ -48,7 +48,7 @@ module ActiveRecordNestedScope
       rels = node.children.map do |child|
         relation = child_relation(child, select: child.klass.primary_key)
         node.klass.where(
-          node.reflection.foreign_type => child.klass.to_s,
+          node.reflection.foreign_type => child.source_type,
           node.reflection.foreign_key => relation
         )
       end

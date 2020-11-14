@@ -30,4 +30,4 @@ before_script:
   - bundle exec rake db:create db:migrate db:seed RAILS_ENV=test
   - cd ../..
 script:
-  - bundle exec rspec
+  - DEBUG=1 bundle exec rspec
