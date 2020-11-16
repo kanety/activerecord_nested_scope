@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.2.0
+
+* Add source_map option to resolve polymorphic type.
+
 ## 1.1.1
 
 * Fix query for associations with primary key option.
