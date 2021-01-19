@@ -1,0 +1,67 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-16.04
+    services:
+      postgres:
+        image: postgres:9.5
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - 3306:3306
+        options: --health-cmd "mysqladmin ping -h localhost" --health-interval 20s --health-timeout 10s --health-retries 10
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: [2.3, 2.4, 2.5, 2.6, 2.7, 3.0]
+        gemfile: ['rails50', 'rails51', 'rails52', 'rails60', 'rails61']
+        database: ['sqlite', 'mysql', 'postgresql']
+        exclude:
+          - ruby: 2.3
+            gemfile: rails60
+          - ruby: 2.3
+            gemfile: rails61
+          - ruby: 2.4
+            gemfile: rails60
+          - ruby: 2.4
+            gemfile: rails61
+          - ruby: 3.0
+            gemfile: rails50
+          - ruby: 3.0
+            gemfile: rails51
+          - ruby: 3.0
+            gemfile: rails52
+
+    name: ruby ${{ matrix.ruby }}, ${{ matrix.gemfile }}, ${{ matrix.database }}
+
+    env:
+      DATABASE: ${{ matrix.database }}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
+    - name: Prepare test
+      run: |
+        cd spec/dummy
+        BUNDLE_GEMFILE=../../${{ env.BUNDLE_GEMFILE }} RAILS_ENV=test bundle exec rake db:create db:migrate db:seed
+        cd ../..
+    - name: Run test
+      run: |
+        DEBUG=1 bundle exec rspec
