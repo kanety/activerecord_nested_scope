@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: [2.4, 2.5, 2.6, 2.7, 3.0]
+        ruby: [2.4, 2.5, 2.6, 2.7, '3.0', 3.1]
         gemfile: ['rails50', 'rails51', 'rails52', 'rails60', 'rails61', 'rails70']
         database: ['sqlite', 'mysql', 'postgresql']
         exclude:
@@ -43,6 +43,12 @@ jobs:
           - ruby: 3.0
             gemfile: rails51
           - ruby: 3.0
+            gemfile: rails52
+          - ruby: 3.1
+            gemfile: rails50
+          - ruby: 3.1
+            gemfile: rails51
+          - ruby: 3.1
             gemfile: rails52
 
     name: ruby ${{ matrix.ruby }}, ${{ matrix.gemfile }}, ${{ matrix.database }}
