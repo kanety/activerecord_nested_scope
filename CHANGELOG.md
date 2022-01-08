@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.3.0
+
+* Drop support for ruby 2.3.
+
 ## 1.2.0
 
 * Add source_map option to resolve polymorphic type.
