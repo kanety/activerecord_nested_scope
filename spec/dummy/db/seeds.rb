@@ -25,5 +25,6 @@
   custom_key_belongs_to = CustomKey::BelongsTo.create(title: "custom_key_belongs_to#{i}", created_at: group.created_at, updated_at: group.updated_at)
 end
 
+INVALID_TYPE = nil
 Polymorphism.create(record_id: 0, record_type: 'INVALID_TYPE')
 Polymorphism.create(record_id: nil, record_type: nil)
