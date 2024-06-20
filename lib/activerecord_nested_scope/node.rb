@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveRecordNestedScope
   class Node
     attr_accessor :klass, :name, :parent, :source_type

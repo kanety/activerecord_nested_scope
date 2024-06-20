@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveRecordNestedScope
   class Builder
     def initialize(klass, name, args)
