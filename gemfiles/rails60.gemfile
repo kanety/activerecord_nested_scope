@@ -2,6 +2,9 @@ source 'https://rubygems.org'
 
 gem "rails", "~> 6.0.0"
 gem "sqlite3", "~> 1.4.0"
+gem "mysql2"
+gem "pg"
+
 gem "psych", "~> 3.3.0"
 
 gemspec path: "../"

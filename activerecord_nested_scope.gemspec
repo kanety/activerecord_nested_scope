@@ -20,10 +20,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activerecord", ">= 5.0"
   spec.add_dependency "activesupport", ">= 5.0"
 
-  spec.add_development_dependency "rails", ">= 5.0"
-  spec.add_development_dependency "mysql2"
-  spec.add_development_dependency "pg"
-  spec.add_development_dependency "sqlite3"
   spec.add_development_dependency "rspec-rails"
   spec.add_development_dependency "simplecov"
 end
