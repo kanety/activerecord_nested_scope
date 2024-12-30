@@ -5,4 +5,11 @@ gem "sqlite3", "~> 1.4.0"
 gem "mysql2"
 gem "pg"
 
+if RUBY_VERSION >= "3.4"
+  gem "base64"
+  gem "bigdecimal"
+  gem "drb"
+  gem "mutex_m"
+end
+
 gemspec path: "../"
