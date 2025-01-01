@@ -5,7 +5,9 @@ require File.expand_path('../dummy/config/environment', __FILE__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 
-ActiveRecord::Base.logger = Logger.new(STDOUT) if ENV['DEBUG'] == '1'
+if ENV['DEBUG'] == '1'
+  ActiveRecord::Base.logger = Logger.new(STDOUT)
+end
 #ActiveRecord::Migration.maintain_test_schema!
 
 #Rails.application.load_tasks
