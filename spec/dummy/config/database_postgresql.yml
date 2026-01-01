@@ -10,9 +10,11 @@ development:
 test:
   <<: *default
   database: activerecord_nested_scope_test
+  <% if ENV['CI'] %>
   host: localhost
   username: <%= ENV['POSTGRES_USER'] %>
   password: <%= ENV['POSTGRES_PASSWORD'] %>
+  <% end %>
 
 production:
   <<: *default

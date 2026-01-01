@@ -13,8 +13,10 @@ development:
 test:
   <<: *default
   database: activerecord_nested_scope_test
+  <% if ENV['CI'] %>
   host: 127.0.0.1
   username: root
+  <% end %>
 
 production:
   <<: *default
