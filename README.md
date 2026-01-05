@@ -4,9 +4,9 @@ An ActiveRecord extension to build nested scopes through pre-defined association
 
 ## Dependencies
 
-* ruby 2.4+
-* activerecord 5.0+
-* activesupport 5.0+
+* ruby 3.0+
+* activerecord 7.0+
+* activesupport 7.0+
 
 ## Installation
 
